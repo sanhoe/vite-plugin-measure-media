@@ -1,0 +1,30 @@
+{
+    "compilerOptions": {
+        "paths": {
+            "npm:*": ["./node_modules/*"]
+        },
+        "target": "ES2022",
+        "module": "Node16",
+        "moduleResolution": "Node16",
+        "lib": [
+            "ES2022"
+        ],
+        "outDir": "./lib",
+        "declaration": true,
+        "allowJs": true,
+        "checkJs": true,
+        "removeComments": true,
+        "strict": true,
+        "noImplicitAny": true,
+        "strictNullChecks": true,
+        "esModuleInterop": true,
+        "skipLibCheck": true,
+        "forceConsistentCasingInFileNames": true
+    },
+    "include": [
+        "src/**/*.ts"
+    ],
+    "exclude": [
+        "node_modules"
+    ],
+}

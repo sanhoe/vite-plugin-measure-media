@@ -1,0 +1,45 @@
+{
+    "name": "vite-plugin-measure-media",
+    "version": "1.0.0",
+    "type": "module",
+    "description": "Vite plugin for setting width and height attributes to images and videos.",
+    "main": "./lib/index.js",
+    "types": "./lib/index.d.ts",
+    "engines": {
+        "node": ">=16"
+    },
+    "scripts": {
+        "build": "tsc",
+        "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/sanhoe/vite-measure-media.git"
+    },
+    "keywords": [
+        "html",
+        "vite",
+        "vite-plugin",
+        "img",
+        "image",
+        "video",
+        "picture",
+        "width",
+        "height",
+        "cls"
+    ],
+    "author": "sanhoe",
+    "license": "MIT",
+    "bugs": {
+        "url": "https://github.com/sanhoe/vite-measure-media/issues"
+    },
+    "homepage": "https://github.com/sanhoe/vite-measure-media#readme",
+    "devDependencies": {
+        "@types/node": "^20.4.2",
+        "typescript": "^5.1.6",
+        "vite": "^4.4.3"
+    },
+    "dependencies": {
+        "parse5": "^7.1.2"
+    }
+}
