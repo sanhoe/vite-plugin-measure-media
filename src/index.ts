@@ -200,6 +200,7 @@ export default function vitePluginMeasureMedia(config = {}): Plugin {
     return {
         name: 'vite-plugin-measure-media',
         transformIndexHtml: {
+            enforce: 'pre',
             async transform(html, ctx) {
                 const ctxFilename = lstatSync(ctx.filename).isDirectory()
                     ? ctx.filename

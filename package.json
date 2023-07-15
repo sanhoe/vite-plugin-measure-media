@@ -1,6 +1,6 @@
 {
     "name": "vite-plugin-measure-media",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "type": "module",
     "description": "Vite plugin for setting width and height attributes to images and videos.",
     "main": "./lib/index.js",
