@@ -6,21 +6,23 @@ import type { Plugin } from 'vite';
 import type { Node, ParentNode, ChildNode, Document, DocumentFragment, Element, CommentNode, TextNode, Template, DocumentType } from 'npm:parse5/dist/tree-adapters/default.d.ts'
 import type { Attribute } from 'npm:parse5/dist/common/token.js';
 
-export default function vitePluginMeasureMedia(config = {}): Plugin {
+export interface MeasureMediaOptions {
+    bin?: string;
+    filter?: 'include' | 'exclude';
+    include?: string;
+    exclude?: string;
+    done?: string;
+    excludeUrl?: string[];
+    override?: boolean;
+    clear?: boolean;
+    image?: boolean;
+    video?: boolean;
+    nestedImg?: boolean;
+}
 
-    const options: {
-        bin: string;
-        filter: 'include' | 'exclude';
-        include: string;
-        exclude: string;
-        done: string;
-        excludeUrl: string[];
-        override: boolean;
-        clear: boolean;
-        image: boolean;
-        video: boolean;
-        nestedImg: boolean;
-    } = {
+export default function vitePluginMeasureMedia(config: MeasureMediaOptions = {}): Plugin {
+
+    const options = {
         bin: 'ffprobe',
         filter: 'exclude',
         include: 'data-measure-media-include',
