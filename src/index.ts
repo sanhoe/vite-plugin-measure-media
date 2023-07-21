@@ -1,4 +1,4 @@
-import { lstatSync } from 'node:fs';
+import { lstatSync, readFileSync } from 'node:fs';
 import { resolve, extname, dirname } from 'node:path';
 import { exec } from 'node:child_process';
 import { parseFragment as parse, serialize } from 'parse5';
@@ -64,9 +64,9 @@ export default function vitePluginMeasureMedia(config: MeasureMediaOptions = {})
         ? src.split(/,\s+/)[0].replace(/\s+?\d+?[xw]$/, '')
         : src.replace(/\s+?\d+?[xw]$/, '');
 
-        if (extname(sanitizePath(input)) === '.svg') {
-            return null;
-        }
+        // if (extname(sanitizePath(input)) === '.svg') {
+        //     return null;
+        // }
 
         if (isLocalPath(input)) {
             return resolve(root, sanitizePath(input));
@@ -77,26 +77,66 @@ export default function vitePluginMeasureMedia(config: MeasureMediaOptions = {})
 
     function processMedia(src: string): Promise<Attribute[]> {
         return new Promise((resolve, reject) => {
-            exec(`${options.bin} -v quiet -print_format json -show_streams -select_streams v:0 ${src}`, (error, stdout, stderr) => {
+            if (extname(src) === '.svg') {
                 try {
-                    if (error) {
-                        throw error;
+                    const svg = readFileSync(src, {
+                        encoding: 'utf8'
+                    });
+
+                    const parsed = parse(svg);
+                    const nodeList = flatten(parsed.childNodes);
+                    const svgElement = nodeList.find((el): el is Element => checkTagName(el, 'svg'));
+                    const svgData: { width: null | string, height: null | string } = {
+                        width: null,
+                        height: null,
                     }
 
-                    const probeData = JSON.parse(stdout).streams[0];
+                    if (svgElement) {
+                        if (hasAttribute(svgElement, 'width')) {
+                            svgData.width = getAttribute(svgElement, 'width');
+                        }
+                        if (hasAttribute(svgElement, 'height')) {
+                            svgData.height = getAttribute(svgElement, 'height');
+                        }
+                    }
 
-                    const result: Attribute[] = [
-                        { name: 'width', value: String(probeData.width) },
-                        { name: 'height', value: String(probeData.height) }
-                    ]
+                    if (svgData.width !== null && svgData.height !== null) {
+                        const result: Attribute[] = [
+                            { name: 'width', value: String(svgData.width) },
+                            { name: 'height', value: String(svgData.height) }
+                        ]
 
-                    resolve(result);
+                        resolve(result);
+                    } else {
+                        reject();
+                    }
                 } catch(err) {
                     console.error(err);
                     console.error(`Error: posthtml-measure-media: ${src}`);
                     reject();
                 }
-            });
+            } else {
+                exec(`${options.bin} -v quiet -print_format json -show_streams -select_streams v:0 ${src}`, (error, stdout, stderr) => {
+                    try {
+                        if (error) {
+                            throw error;
+                        }
+
+                        const probeData = JSON.parse(stdout).streams[0];
+
+                        const result: Attribute[] = [
+                            { name: 'width', value: String(probeData.width) },
+                            { name: 'height', value: String(probeData.height) }
+                        ]
+
+                        resolve(result);
+                    } catch(err) {
+                        console.error(err);
+                        console.error(`Error: posthtml-measure-media: ${src}`);
+                        reject();
+                    }
+                });
+            }
         });
     }
 
